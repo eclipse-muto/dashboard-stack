@@ -37,8 +37,7 @@ const StackSummary = () => {
   const navigation = useHistory()
   const [summary, setSummary] = useState({ types: ['ai.composiv.sandbox.f1tenth:Stack:1.0.0'], size: 0 })
 
-  const filter =
-'eq(definition,"ai.composiv.sandbox.f1tenth:Stack:1.0.0")'
+  const filter = 'or(eq(definition,"ai.composiv.sandbox.f1tenth:Stack:1.0.0"),eq(definition,"org.eclipse.muto:Stack:0.0.1"))'
   const [getModels] = useLazyQuery(GETTHINGS, {
     variables: {
       filter

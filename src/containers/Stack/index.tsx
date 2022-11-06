@@ -40,10 +40,11 @@ const StackList = () => {
     fetchPolicy: 'no-cache'
   })
 
+  const SRQL = 'or(eq(definition,"ai.composiv.sandbox.f1tenth:Stack:1.0.0"),eq(definition,"org.eclipse.muto:Stack:0.0.1"))'
   const getStacks = (nameLike) => {
     getStacksWithIdLike({
       variables: {
-        filter: `and(eq(definition,"ai.composiv.sandbox.f1tenth:Stack:1.0.0"),like(thingId,"*${nameLike}*"))`
+        filter: `and(${SRQL}, like(thingId,"*${nameLike}*"))`
       },
       fetchPolicy: 'no-cache'
     }).then((result) => {

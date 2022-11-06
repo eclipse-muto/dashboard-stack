@@ -36,8 +36,8 @@
     "start": "liveui start",
     "build": "liveui build",
     "build-lib": "liveui build-lib",
-    "docker": "docker build -t eclipse-muto/dashboard-stack:latest ./docker/",
-    "docker-run": "docker run --rm -it -p 5006:80 eclipse-muto/dashboard-stack:latest"
+    "docker": "docker build -t composiv/dashboard-stack:latest ./docker/",
+    "docker-run": "docker run --rm -it -p 5006:80 composiv/dashboard-stack:latest"
   },
   "peerDependencies": {
     "@apollo/client": "^3.7.0",
