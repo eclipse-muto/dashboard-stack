@@ -16,7 +16,7 @@
 //    Composiv.ai, Eteration A.S. - initial API and implementation
 //
 //
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   Card,
   CardTitle,
@@ -26,41 +26,19 @@ import {
   DataListCell,
   DataListItemRow,
   DataListItemCells,
-  SearchInput
+  SearchInput,
+  Spinner
 } from '@patternfly/react-core'
 
-import { useLazyQuery } from '@apollo/client'
-import { GETTHINGS } from '../../api/query/things'
+import { GetStacksWitdIdLike } from '../../api/query/things'
 
 const StackList = () => {
-  const [stacks, setStacks] = useState<any[]>([])
-
-  const [filterValue, setFilterValue] = React.useState('')
-  const [getStacksWithIdLike] = useLazyQuery(GETTHINGS, {
-    fetchPolicy: 'no-cache'
-  })
-
-  const SRQL = 'or(eq(definition,"ai.composiv.sandbox.f1tenth:Stack:1.0.0"),eq(definition,"org.eclipse.muto:Stack:0.0.1"))'
-  const getStacks = (nameLike) => {
-    getStacksWithIdLike({
-      variables: {
-        filter: `and(${SRQL}, like(thingId,"*${nameLike}*"))`
-      },
-      fetchPolicy: 'no-cache'
-    }).then((result) => {
-      if (result?.data?.things) {
-        setStacks(result?.data?.things.items?.slice(0).reverse())
-      }
-    })
-  }
-
-  useEffect(() => {
-    getStacks('*')
-  }, [])
+  const [nameLike, setNameLike] = useState('')
+  const { data: sdata, isLoading: isStackListLoading } = GetStacksWitdIdLike({ nameLike })
+  const stacks:any[] = sdata?.data?.items
 
   const onFilterChange = (value, _event) => {
-    setFilterValue(value)
-    if (filterValue) getStacks(filterValue)
+    setNameLike(value)
   }
 
   return (
@@ -83,13 +61,14 @@ const StackList = () => {
           <br />
           <SearchInput
             placeholder="Name includes"
-            value={filterValue}
+            value={nameLike}
             onChange={onFilterChange}
             onClear={(evt) => onFilterChange('', evt)}
           />
+          { isStackListLoading ? <Spinner isSVG size="lg" aria-label="Loading stacks" /> : null }
 
           <DataList aria-label="single action data list example ">
-            {stacks.map((stack) => {
+            {stacks?.map((stack) => {
               return (
                 <DataListItem
                   aria-labelledby="single-action-item1"
@@ -106,7 +85,6 @@ const StackList = () => {
                         </DataListCell>
                       ]}
                     />
-
                   </DataListItemRow>
                 </DataListItem>
               )

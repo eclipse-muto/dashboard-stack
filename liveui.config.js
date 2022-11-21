@@ -6,15 +6,15 @@ module.exports = {
         'dashboard-stack': './src/index.tsx'
     },
     shared: [
+        'axios',
         'react',
         'react-dom',
         "react-router-dom",
         '@patternfly/react-core',
         "@patternfly/react-icons",
+        '@tanstack/react-query',
         "html-loader",
         "style-loader",
-        'uuid',
-        'graphql',
-        '@apollo/client'   
+        'uuid'
     ],
 }

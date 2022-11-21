@@ -25,34 +25,26 @@ import {
   DataListCell,
   DataListItem,
   DataListItemCells,
-  DataListItemRow
+  DataListItemRow,
+  Spinner
 } from '@patternfly/react-core'
 
-import { useLazyQuery } from '@apollo/client'
-import { GETTHINGS } from '../../api/query/things'
+import { GetStacksWitdIdLike } from '../../api/query/things'
 
 import { useHistory } from 'react-router-dom'
 
 const StackSummary = () => {
   const navigation = useHistory()
   const [summary, setSummary] = useState({ types: ['ai.composiv.sandbox.f1tenth:Stack:1.0.0'], size: 0 })
-
-  const filter = 'or(eq(definition,"ai.composiv.sandbox.f1tenth:Stack:1.0.0"),eq(definition,"org.eclipse.muto:Stack:0.0.1"))'
-  const [getModels] = useLazyQuery(GETTHINGS, {
-    variables: {
-      filter
-    },
-    fetchPolicy: 'no-cache'
-  })
+  const { data, status, error } = GetStacksWitdIdLike({ nameLike: '' })
 
   useEffect(() => {
-    getModels().then((rdata) => {
-      if (rdata) {
-        const { types } = summary
-        setSummary({ types, size: rdata?.data?.things?.items?.length })
-      }
-    })
-  }, [])
+    console.log(data)
+    if (data?.data) {
+      const { types } = summary
+      setSummary({ types, size: data?.data?.items?.length })
+    }
+  }, [data])
 
   return (
         <Card
@@ -79,7 +71,7 @@ const StackSummary = () => {
               color: 'white'
             }}
           >
-            Stacks
+            Stacks { status === 'loading' ? <Spinner isSVG size="lg" aria-label="Getting Stacks" /> : null }
           </CardTitle>
           <CardBody>
             <DataList aria-label="Compact data list example" isCompact>
@@ -91,7 +83,7 @@ const StackSummary = () => {
                         <span id="compact-item1"># of Types</span>
                       </DataListCell>,
                       <DataListCell key="secondary content">
-                        {summary.types.length}
+                         { error || summary.types.length}
                       </DataListCell>
                     ]}
                   />
@@ -105,7 +97,7 @@ const StackSummary = () => {
                         <span id="compact-item1"># of Stacks</span>
                       </DataListCell>,
                       <DataListCell key="secondary content">
-                        {summary.size}
+                        { error || summary.size}
                       </DataListCell>
                     ]}
                   />
